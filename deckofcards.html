@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+  <head>
+    <title>axios - get example</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <script src= "https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+    
+    </style>
+  </head>
+  <body class="container">
+    <h1>Deck of Cards</h1>
+    <ul id="spades" class="list-unstyled"></ul>
+    <ul id="diamonds" class="list-unstyled"></ul>
+    <ul id="hearts" class="list-unstyled"></ul>
+    <ul id="clubs" class="list-unstyled"></ul>
+    <br><br>
+    <div id="shuffleButton"></div>
+    
+
+    
+    <script>
+      let url ="https://deckofcardsapi.com/api/deck";
+      let deckID = "8hu00crz3ruj";
+
+      let queenCount = 0;
+      let cardsCollection = [];
+      let cardsBuffer = [];
+      let y = 0;
+      let spades = [];
+      let diamonds = [];
+      let hearts = [];
+      let clubs = [];
+
+      function recJob(count) {
+        if(queenCount < count) {
+          axios.get(`${url}/${deckID}/draw/?count=2`)
+            .then(function (response) {
+              let resCards = response.data.cards;
+              for(i=0; i<2; i++) {
+                if(resCards[i].value =="QUEEN") {
+                  cardsCollection.push(resCards[i]);
+                  queenCount++;
+                  count--;
+                  if(queenCount == 4 && count == 3) {
+                    printCardsCollection();
+                  }
+                }
+                if(queenCount < count && resCards[i].value !="QUEEN") {
+                  cardsCollection.push(resCards[i]);
+                  setTimeout(function(){ recJob(count); }, 1000);
+                }
+              }
+            })
+            .catch(function (err) {
+            });
+        }
+      }
+
+      function printCardsCollection() {
+        for(j=0; j<cardsCollection.length; j++) {
+          switch(cardsCollection[j].suit) {
+            case "HEARTS":
+                  hearts.push(cardsCollection[j].value);
+                  break;
+            case "CLUBS":
+                  clubs.push(cardsCollection[j].value);
+                  break;
+            case "SPADES":
+                  spades.push(cardsCollection[j].value);
+                  break;
+            case "DIAMONDS":
+                  diamonds.push(cardsCollection[j].value);
+                  break;
+            default:
+                  break;
+          }
+        }
+        document.getElementById('spades').innerHTML = '<li class="text-danger">SPADES: [ ' + spades + ' ]</li>';
+        document.getElementById('clubs').innerHTML = '<li class="text-danger">CLUBS: [ ' + clubs + ' ]</li>';
+        document.getElementById('hearts').innerHTML = '<li class="text-danger">HEARTS: [ ' + hearts + ' ]</li>';
+        document.getElementById('diamonds').innerHTML = '<li class="text-danger">DIAMONDS: [ ' + diamonds + ' ]</li>';
+      }
+
+      // Get deck id IIFE
+      (function shuffleDeck() {
+          axios.get(`${url}/${deckID}/shuffle/`)
+          .then(function (response) {
+            document.getElementById('shuffleButton').innerHTML = '<button type="button" class="btn btn-primary" onclick="recJob(4);">Lets Shuffle</button>';
+          })
+          .catch(function (err) {
+          });
+      })();
+    </script>
+  </body>
+</html>
