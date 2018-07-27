@@ -2,27 +2,53 @@
 <html>
   <head>
     <title>axios - get example</title>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
     <script src= "https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
-    
+    .btn-primary {
+      color: #fff;
+      background-color: #428bca;
+      border-color: #357ebd;
+    }
+    .btn {
+      display: inline-block;
+      padding: 6px 12px;
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+    }
+    ul li {
+      list-style: none;
+    }
     </style>
   </head>
-  <body class="container">
+  <body>
     <h1>Deck of Cards</h1>
-    <ul id="spades" class="list-unstyled"></ul>
-    <ul id="diamonds" class="list-unstyled"></ul>
-    <ul id="hearts" class="list-unstyled"></ul>
-    <ul id="clubs" class="list-unstyled"></ul>
+    <ul>
+      <li id="spades"></li>
+      <li id="diamonds"></li>
+      <li id="hearts"></li>
+      <li id="clubs"></li>
+    </ul>
     <br><br>
-    <div id="shuffleButton"></div>
+    <button type="button" class="btn btn-primary" onclick="recJob(4);">Lets Shuffle</button>
     
 
     
     <script>
       let url ="https://deckofcardsapi.com/api/deck";
       let deckID = "8hu00crz3ruj";
-
       let queenCount = 0;
       let cardsCollection = [];
       let cardsBuffer = [];
@@ -62,31 +88,30 @@
           switch(cardsCollection[j].suit) {
             case "HEARTS":
                   hearts.push(cardsCollection[j].value);
+                  document.getElementById('hearts').textContent = 'HEARTS: [ ' + hearts + ' ]';
                   break;
             case "CLUBS":
                   clubs.push(cardsCollection[j].value);
+                  document.getElementById('clubs').textContent = 'CLUBS: [ ' + clubs + ' ]';
                   break;
             case "SPADES":
                   spades.push(cardsCollection[j].value);
+                  document.getElementById('spades').textContent = 'SPADES: [ ' + spades + ' ]';
                   break;
             case "DIAMONDS":
                   diamonds.push(cardsCollection[j].value);
+                  document.getElementById('diamonds').textContent = 'DIAMONDS: [ ' + diamonds + ' ]';
                   break;
             default:
                   break;
           }
         }
-        document.getElementById('spades').innerHTML = '<li class="text-danger">SPADES: [ ' + spades + ' ]</li>';
-        document.getElementById('clubs').innerHTML = '<li class="text-danger">CLUBS: [ ' + clubs + ' ]</li>';
-        document.getElementById('hearts').innerHTML = '<li class="text-danger">HEARTS: [ ' + hearts + ' ]</li>';
-        document.getElementById('diamonds').innerHTML = '<li class="text-danger">DIAMONDS: [ ' + diamonds + ' ]</li>';
       }
 
       // Get deck id IIFE
       (function shuffleDeck() {
           axios.get(`${url}/${deckID}/shuffle/`)
           .then(function (response) {
-            document.getElementById('shuffleButton').innerHTML = '<button type="button" class="btn btn-primary" onclick="recJob(4);">Lets Shuffle</button>';
           })
           .catch(function (err) {
           });
